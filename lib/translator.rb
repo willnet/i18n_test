@@ -9,6 +9,11 @@ module Translator
     @store ||= Redis.new(db: DATABASES[Rails.env.to_s])
   end
 
+  def self.reload!
+    store.flushdb
+    I18n.backend.load_translations
+  end
+
   class Backend < I18n::Backend::KeyValue
     include I18n::Backend::Memoize
 
