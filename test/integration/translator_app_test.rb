@@ -11,7 +11,7 @@ class TranslatorAppTest < ActionDispatch::IntegrationTest
     visit '/translator/en/pl'
     fill_in 'date.formats.default', with: %("%d-%m-%Y")
 
-    click_button 'Store translations'
+    first('[type=submit]').click
     assert_equal '17-04-2010', I18n.l(Date.new(2010, 4, 17), locale: :pl)
   end
 end
