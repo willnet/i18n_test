@@ -7,6 +7,13 @@ module Translator
       exhibit_translations(from, to)
     end
 
+    post '/:from/:to' do |from, to|
+      I18n.backend.store_translations to, decoded_translations, escape: false
+      Translator.store.save
+      @message = 'Translations stored with success!'
+      exhibit_translations(from, to)
+    end
+
     protected
 
     def exhibit_translations(from, to)
@@ -23,6 +30,13 @@ module Translator
     def locale_value(locale, key)
       value = Translator.store["#{locale}.#{key}"]
       value if value && !ActiveSupport::JSON.decode(value).is_a?(Hash)
+    end
+
+    def decoded_translations
+      translations = params.except('from', 'to')
+      translations.each do |key, value|
+        translations[key] = ActiveSupport::JSON.decode(value) rescue nil
+      end
     end
   end
 end
